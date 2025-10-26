@@ -1,0 +1,98 @@
+<!-- ùuuu giỏi vậy tarrr, biết vào trong này luôn. Xem thôi đừng phá đấy nhá =)) -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Hành Trình Tốt Nghiệp | Phan Phong Phú</title>
+
+  <!-- 🔹 Mô tả & chia sẻ -->
+  <meta name="description" content="Hành trình tốt nghiệp của Phan Phong Phú – từ Bình Định đến Sài Gòn, với đam mê GIS và những kỷ niệm đáng nhớ.">
+  <meta property="og:title" content="Hành trình tốt nghiệp của Phan Phong Phú" />
+  <meta property="og:description" content="Bốn năm cùng những bản đồ, đồ án, và bạn bè thân thương." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="favicon.ico.png" />
+  <meta name="theme-color" content="#2ecc71" />
+
+  <link rel="icon" type="image/png" href="favicon.ico.png" />
+  <link rel="preload" href="style.css" as="style" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div id="map"></div><!-- 📸 Timeline ảnh bên phải -->
+  <!-- 📸 Timeline ảnh ngang ở phía dưới -->
+  <div id="timeline">
+    <div id="timelineContent"></div>
+  </div>
+
+  <!-- 🌄 Intro -->
+  <section id="intro" class="overlay show">
+    <div class="card">
+      <h1>Hành trình tốt nghiệp của <span class="hl">Phan Phong Phú</span></h1>
+      <p>Bốn năm qua là những buổi sáng mang laptop ra quán cà phê để chỉnh bản đồ, 
+      những đêm trắng vì một dòng code ArcPy chưa chạy, và những chuyến thực tập giữa gió biển mặn mà.</p>
+      <p>Từ Bình Định tới Sài Gòn, tôi mang theo niềm háo hức của tuổi trẻ, rồi lớn lên giữa những đồ án,
+      những người bạn tốt bụng và cả những thất bại nhỏ dạy tôi kiên nhẫn hơn.</p>
+      <button id="startBtn" class="btn btn-primary">🚀 Bắt đầu hành trình</button>
+      <p class="hint">Mở loa lên nhé!!!</p>
+    </div>
+  </section>
+
+  <!-- 🎓 Kết thúc hành trình -->
+  <section id="storyOverlay" class="overlay hidden">
+    <div class="card wide">
+      <h2>🎓 Kết thúc một hành trình – Bắt đầu một giấc mơ</h2>
+      <p>Bốn năm qua là những ngày chạy deadline cùng bản đồ, những chuyến đi từ Vĩnh Hy tới Nha Trang, 
+      những đêm khuya và sáng sớm hoàn thiện đồ án. Cảm ơn thầy cô, anh chị và bạn bè 
+      đã luôn ở cạnh. Mỗi dòng dữ liệu trên bản đồ hôm nay là một câu chuyện của đam mê, kiên nhẫn và yêu thương.</p>
+      <div class="row">
+        <button id="showFriendsBtn" class="btn">Xem những người bạn của tôi 👥</button>
+        <button id="closeStoryBtn" class="btn btn-secondary">Đóng</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 💌 Lời mời dự lễ -->
+  <section id="inviteOverlay" class="overlay hidden">
+    <div class="card wide">
+      <h2>💌 Lời mời dự lễ tốt nghiệp</h2>
+      <p>Vào <b>Vào lúc 8g ngày 13/11/2025</b>, rất mong được gặp bạn tại
+      <b>Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQGHCM, Khu đô thị ĐHQG-HCM, P. Linh Xuân, TP.HCM</b> 
+      để cùng nhau đánh dấu cột mốc tốt nghiệp.</p>
+
+      <!-- 🎵 Nhạc nền -->
+      <audio id="bgm" preload="auto" loop>
+        <source src="https://www.dropbox.com/scl/fi/gf1vnsjrmmyhu1mfsyiv7/Gi-c-aM-C-a-T-i-_.mp3?rlkey=obsazdhf0sh2oufa87g1v0zce&st=hk9be4dp&dl=1" type="audio/mpeg">
+      </audio>
+
+      <!-- 💥 Nhạc pháo hoa -->
+      <audio id="fireworkSound" preload="auto" loop>
+        <source src="https://www.dropbox.com/scl/fi/xmh42617nypy33attzscv/Pretty-Boy-mp3cut.net.mp3?rlkey=mazdm386zieghs5100zj8aiu0&st=8fmebxm5&dl=1" type="audio/mpeg">
+      </audio>
+
+      <div class="row">
+        <button id="inviteCloseBtn" class="btn btn-primary">Hẹn gặp mọi người tại buổi lễ!</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="controls">
+    <button id="prevBtn" class="btn btn-secondary" disabled>◀ Trước</button>
+    <button id="nextBtn" class="btn btn-primary">Tiếp ▶</button>
+    <button id="muteBtn" class="btn btn-secondary">🔊</button>
+    <button id="toggleTimelineBtn" class="btn btn-secondary">🖼️ Ẩn/hiện vùng ki ước</button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+
+  <canvas id="starfield"></canvas>
+  <canvas id="fireworks"></canvas>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
+<!-- ùuuu giỏi vậy tarrr, biết vào trong này luôn. Xem thôi đừng phá đấy nhá =)) -->
+  

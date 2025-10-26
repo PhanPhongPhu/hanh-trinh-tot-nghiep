@@ -1,0 +1,369 @@
+/* ùuuu giỏi vậy tarrr, biết vào trong này luôn. Xem thôi đừng phá đấy nhá =)) */
+* {
+  box-sizing: border-box;
+}
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
+#map {
+  position: fixed;
+  inset: 0;
+}
+
+/* Overlay chung */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, .35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+.overlay.show,
+.overlay:not(.hidden) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Card trong overlay */
+.card {
+  background: #ffffffee;
+  color: #222;
+  max-width: 760px;
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.card.wide { max-width: 880px; }
+
+/* Tiêu đề, nút */
+h1 { margin: 0 0 10px; font-size: 32px; }
+h2 { margin: 0 0 12px; }
+.hl { color: #f5c243; font-weight: 800; }
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: #e6e6e9;
+  cursor: pointer;
+  transition: filter .25s;
+}
+.btn:hover { filter: brightness(.95); }
+.btn-primary { background: #2ecc71; color: #fff; }
+.btn-secondary { background: #6c757d; color: #fff; }
+
+.row { display: flex; gap: 10px; margin-top: 8px; }
+.hint { font-size: 12px; opacity: .8; }
+
+#controls {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 500;
+}
+
+/* --- Popup Leaflet --- */
+.leaflet-popup-content-wrapper {
+  padding: 10px 14px;
+  border-radius: 12px;
+}
+/* 💫 Hiệu ứng popup mở mượt mà */
+.leaflet-popup-content-wrapper {
+  animation: popupIn .35s ease;
+  transform-origin: bottom center;
+}
+@keyframes popupIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.leaflet-popup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;  
+  line-height: 1.4;
+  font-size: 14px;
+  max-width: 420px;
+}
+.leaflet-popup-content h3, 
+.leaflet-popup-content p {
+  margin: 4px 0;
+}
+.leaflet-popup-content p:last-child {
+  margin-bottom: 2px;
+}
+
+/* --- Ảnh trong popup --- */
+.img-row, .img-single {
+  display: flex;
+  margin: 6px 0 4px;
+}
+.img-row {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  justify-content: flex-start;
+  padding-bottom: 4px;
+}
+.img-row::-webkit-scrollbar {
+  height: 6px;
+}
+.img-row::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.3);
+  border-radius: 10px;
+}
+.img-single {
+  justify-content: center;
+}
+.event-img {
+  width: 180px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  margin-right: 8px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+.event-img {
+  width: 160px;
+  height: auto;
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: cover;
+  image-rendering: -webkit-optimize-contrast; /* làm rõ ảnh nhỏ */
+  filter: brightness(0.97); /* nhẹ hơn mắt */
+}
+
+.event-img:hover {
+  transform: scale(1.05);
+}
+
+/* Ảnh đơn căn giữa */
+.img-single .event-img {
+  margin-right: 0;
+}
+
+/* Responsive nhỏ */
+@media (max-width: 400px) {
+  .leaflet-popup-content { max-width: 260px; font-size: 13px; }
+  .event-img { width: 140px; height: 90px; }
+}
+
+/* --- Hiệu ứng pháo hoa & sao rơi --- */
+#fireworks, #starfield {
+  position: fixed;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+/* --- Hiệu ứng pháo hoa & sao rơi --- */
+#fireworks, #starfield {
+  position: fixed;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* Đặt thấp hơn overlay nhưng vẫn trên map */
+#fireworks { z-index: 400; }
+#starfield { z-index: 300; }
+
+/* Overlay sẽ nằm trên pháo hoa */
+.overlay {
+  z-index: 500;
+}
+
+#starfield.active { opacity: 1; }
+
+/* Ẩn chung */
+.hidden {
+  display: none !important;
+  visibility: hidden;
+  opacity: 0;
+}
+#fireworks {
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+/* --- Timeline ngang ở dưới cùng --- */
+#timeline {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 130px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  z-index: 600;
+}
+
+#timeline.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#timelineContent {
+  display: flex;
+  flex-direction: row; /* ngang */
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  padding: 8px 14px;
+  scroll-behavior: smooth;
+}
+
+/* Ẩn thanh cuộn thô */
+#timelineContent::-webkit-scrollbar {
+  height: 6px;
+}
+#timelineContent::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+/* --- Ảnh trong timeline (kích thước đồng nhất) --- */
+.timeline-img {
+  width: 120px;          /* ✅ đồng kích thước */
+  height: 90px;          /* ✅ cố định tỉ lệ */
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  object-fit: cover;     /* cắt vừa khung, không méo */
+  background: #eee;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.timeline-img.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* --- Các nút điều khiển --- */
+#controls {
+  position: fixed;
+  left: 50%;
+  bottom: 130px; /* vị trí mặc định phía trên timeline */
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 700;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.6s ease, bottom 0.6s ease; /* ⚡ thêm chuyển động bottom */
+}
+#controls.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Tạo khoảng cách hợp lý khi timeline ẩn */
+.controls-lower {
+  bottom: 30px !important; /* 🔽 hạ nút xuống khi timeline ẩn */
+}
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  background: #e6e6e9;
+  cursor: pointer;
+  transition: filter .25s;
+  font-weight: 500;
+}
+.btn:hover { filter: brightness(.95); }
+.btn-primary { background: #2ecc71; color: #fff; }
+.btn-secondary { background: #6c757d; color: #fff; }
+/* 📱 RESPONSIVE CHO MOBILE */
+@media (max-width: 768px) {
+
+  /* Bản đồ full màn hình, không bị viền */
+  #map {
+    height: 100vh;
+    width: 100%;
+  }
+
+  /* --- Nút điều khiển --- */
+  #controls {
+    flex-wrap: wrap;                /* tự xuống dòng khi hẹp */
+    gap: 6px;
+    bottom: 120px;                  /* nâng nhẹ lên để không che timeline */
+    transform: translateX(-50%);
+  }
+
+  #controls .btn {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+
+  /* --- Timeline ảnh --- */
+  #timeline {
+    height: 100px;                  /* thấp hơn một chút */
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  #timelineContent {
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  .timeline-img {
+    width: 90px;                    /* ảnh nhỏ lại để vừa màn hình */
+    height: 70px;
+    border-radius: 6px;
+  }
+
+  /* --- Popup (intro, story, invite) --- */
+  #intro, #storyOverlay, #inviteOverlay {
+    padding: 20px;
+    width: 90%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 12px;
+  }
+
+  #intro h1, #storyOverlay h2, #inviteOverlay h2 {
+    font-size: 1.2rem;
+  }
+
+  #intro p, #inviteOverlay p {
+    font-size: 0.9rem;
+  }
+
+  #startBtn, #closeStoryBtn, #inviteCloseBtn {
+    font-size: 1rem;
+    padding: 10px 18px;
+    margin-top: 12px;
+    align-self: center;
+  }
+
+  /* --- Hiệu ứng chữ gõ --- */
+  #typingOverlay {
+    font-size: 1rem;
+    width: 90%;
+    line-height: 1.3em;
+  }
+}
+
+
+
