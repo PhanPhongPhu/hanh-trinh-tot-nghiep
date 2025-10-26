@@ -385,10 +385,41 @@ h2 { margin: 0 0 12px; }
   }
 
   /* --- Hiệu ứng chữ gõ --- */
+  /* 🎯 Tối ưu chữ gõ cho mobile */
+#typingOverlay {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+  max-width: 90%;                /* ✅ co giãn trong khung màn hình */
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+  font-weight: 500;
+  z-index: 1200;
+  line-height: 1.4em;
+  word-break: break-word;        /* ✅ tự xuống dòng nếu dài */
+  white-space: normal !important;
+}
+
+/* 📱 Khi màn hình nhỏ hơn 768px (điện thoại) */
+@media (max-width: 768px) {
   #typingOverlay {
-    font-size: 1rem;
-    width: 40%;
+    font-size: 1.05rem;          /* chữ nhỏ hơn một chút */
+    top: 12%;                    /* hạ xuống nhẹ để không dính mép trên */
+    max-width: 92%;              /* vừa khung điện thoại */
     line-height: 1.3em;
+    padding: 0 6px;
+  }
+}
+
+/* 📱 Màn rất nhỏ (dưới 480px, như iPhone SE) */
+@media (max-width: 480px) {
+  #typingOverlay {
+    font-size: 0.95rem;
+    top: 14%;
+    line-height: 1.25em;
   }
 }
 
