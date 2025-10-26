@@ -304,18 +304,40 @@ h2 { margin: 0 0 12px; }
 
   /* --- Nút điều khiển --- */
   #controls {
-    flex-wrap: wrap;                /* tự xuống dòng khi hẹp */
-    gap: 6px;
-    bottom: 120px;                  /* nâng nhẹ lên để không che timeline */
+  background: rgba(255, 255, 255, 0.8);
+  padding: 8px 10px;
+  border-radius: 14px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+  #controls {
+    position: fixed;
+    left: 50%;
     transform: translateX(-50%);
+    bottom: 115px; /* nằm ngay trên timeline */
+    display: flex;
+    flex-wrap: wrap;            /* ✅ tự xuống dòng nếu hẹp */
+    justify-content: center;    /* ✅ căn giữa các nút */
+    align-items: center;
+    gap: 8px;
+    width: 95%;                 /* cho rộng một chút để nút không tràn */
+    z-index: 700;
   }
 
   #controls .btn {
-    padding: 8px 14px;
+    flex: 1 1 auto;             /* co giãn đều nhau */
+    min-width: 110px;           /* đảm bảo nút không quá nhỏ */
+    max-width: 160px;           /* tránh quá to */
+    text-align: center;
+    padding: 10px 12px;
     font-size: 0.9rem;
+    border-radius: 10px;
   }
 
   /* --- Timeline ảnh --- */
+  #toggleTimelineBtn {
+    flex-basis: 100%;           /* ✅ nằm riêng hàng (dễ bấm) */
+    text-align: center;
+  }
   #timeline {
     height: 100px;                  /* thấp hơn một chút */
     background: rgba(255, 255, 255, 0.95);
@@ -360,10 +382,7 @@ h2 { margin: 0 0 12px; }
   /* --- Hiệu ứng chữ gõ --- */
   #typingOverlay {
     font-size: 1rem;
-    width: 90%;
+    width: 50%;
     line-height: 1.3em;
   }
 }
-
-
-
