@@ -116,14 +116,22 @@ async function start() {
   await loadData();
   bindMarkers();
   overlays.intro.classList.add('hidden');
-// 💡 Bắt đầu nhạc sau thao tác click hợp lệ
   audio.currentTime = 0;
   audio.volume = 0.8;
   audio.play().catch(err => console.warn('Autoplay bị chặn:', err));
-// 📸 Hiện timeline khi bắt đầu hành trình
-  document.getElementById("timeline").classList.add("show");
-// 🎮 Hiện luôn các nút điều khiển
-  document.getElementById("controls").classList.add("show");
+
+  // 🎮 Hiện các nút điều khiển
+  const controls = document.getElementById("controls");
+  controls.classList.add("show");
+
+  // 🖼️ Ẩn timeline mặc định khi bắt đầu
+  const timeline = document.getElementById("timeline");
+  timeline.classList.remove("show");
+  timeline.style.display = "none";
+  controls.classList.add("controls-lower"); // hạ nút xuống cho cân đối
+
+  timelineWasVisible = false; // lưu trạng thái mặc định là ẩn
+
   showEvent(0);
 }
 
@@ -419,7 +427,7 @@ function typingDuringFriends() {
   Object.assign(box.style, {
     position: "fixed",
     top: "10%",
-    left: "50%",
+    left: "50%",  
     transform: "translateX(-50%)",
     fontSize: "1.4rem",
     color: "#fff",
@@ -463,36 +471,35 @@ function typingDuringFriends() {
   };
 }
 
-// 🖼️ Nút bật/tắt timeline
+// 🖼️ Nút bật/tắt timeline (đổi màu thay vì đổi chữ)
 const toggleTimelineBtn = document.getElementById("toggleTimelineBtn");
+
 toggleTimelineBtn.onclick = () => {
   const timeline = document.getElementById("timeline");
   const controls = document.getElementById("controls");
+  const isHidden = timeline.style.display === "none" || !timeline.classList.contains("show");
 
-  // Nếu timeline đang ẩn hoặc chưa hiển thị
-  if (timeline.style.display === "none" || !timeline.style.display) {
-    // Hiện timeline
+  if (isHidden) {
+    // 👉 Hiện timeline
     timeline.style.display = "flex";
     setTimeout(() => timeline.classList.add("show"), 10);
-
-    // Đẩy các nút lên
     controls.classList.remove("controls-lower");
 
-    toggleTimelineBtn.textContent = "🖼️ Ẩn";
-  } 
-  // Nếu timeline đang hiển thị
-  else {
-    // Ẩn timeline
+    // Đổi màu nút thành xanh (đang bật)
+    toggleTimelineBtn.classList.remove("off");
+    timelineWasVisible = true;
+  } else {
+    // 👉 Ẩn timeline
     timeline.classList.remove("show");
     setTimeout(() => (timeline.style.display = "none"), 400);
-
-    // Hạ nút xuống
     controls.classList.add("controls-lower");
-
-    toggleTimelineBtn.textContent = "🖼️ Hiện";
+    toggleTimelineBtn.classList.toggle("off");
+    // Đổi màu nút thành xám (đang tắt)
+    toggleTimelineBtn.classList.add("off");
+    timelineWasVisible = false;
   }
 };
-// 💡 Khi đóng lời mời
+
 // 💡 Khi đóng lời mời
 inviteCloseBtn.onclick = () => {
   overlays.invite.classList.add('hidden');
