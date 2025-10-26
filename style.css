@@ -61,22 +61,10 @@ h2 { margin: 0 0 12px; }
 .row { display: flex; gap: 10px; margin-top: 8px; }
 .hint { font-size: 12px; opacity: .8; }
 
-#controls {
-  position: fixed;
-  left: 12px;
-  bottom: 12px;
-  display: flex;
-  gap: 8px;
-  z-index: 500;
-}
-
 /* --- Popup Leaflet --- */
 .leaflet-popup-content-wrapper {
   padding: 10px 14px;
   border-radius: 12px;
-}
-/* 💫 Hiệu ứng popup mở mượt mà */
-.leaflet-popup-content-wrapper {
   animation: popupIn .35s ease;
   transform-origin: bottom center;
 }
@@ -124,32 +112,21 @@ h2 { margin: 0 0 12px; }
   justify-content: center;
 }
 .event-img {
-  width: 180px;
-  height: 120px;
+  width: 160px;
+  height: auto;
+  max-width: 100%;
+  max-height: 120px;
   object-fit: cover;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   margin-right: 8px;
   flex-shrink: 0;
   transition: transform 0.25s ease;
+  image-rendering: -webkit-optimize-contrast;
+  filter: brightness(0.97);
 }
-.event-img {
-  width: 160px;
-  height: auto;
-  max-width: 100%;
-  max-height: 120px;
-  object-fit: cover;
-  image-rendering: -webkit-optimize-contrast; /* làm rõ ảnh nhỏ */
-  filter: brightness(0.97); /* nhẹ hơn mắt */
-}
-
 .event-img:hover {
   transform: scale(1.05);
-}
-
-/* Ảnh đơn căn giữa */
-.img-single .event-img {
-  margin-right: 0;
 }
 
 /* Responsive nhỏ */
@@ -165,34 +142,17 @@ h2 { margin: 0 0 12px; }
   width: 100%; height: 100%;
   pointer-events: none;
 }
-/* --- Hiệu ứng pháo hoa & sao rơi --- */
-#fireworks, #starfield {
-  position: fixed;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-}
-
-/* Đặt thấp hơn overlay nhưng vẫn trên map */
-#fireworks { z-index: 400; }
+#fireworks { z-index: 400; opacity: 0; transition: opacity 2s ease; }
 #starfield { z-index: 300; }
 
 /* Overlay sẽ nằm trên pháo hoa */
-.overlay {
-  z-index: 500;
-}
-
-#starfield.active { opacity: 1; }
+.overlay { z-index: 500; }
 
 /* Ẩn chung */
 .hidden {
   display: none !important;
   visibility: hidden;
   opacity: 0;
-}
-#fireworks {
-  opacity: 0;
-  transition: opacity 2s ease;
 }
 
 /* --- Timeline ngang ở dưới cùng --- */
@@ -213,15 +173,11 @@ h2 { margin: 0 0 12px; }
   transition: opacity 0.6s ease;
   z-index: 600;
 }
-
-#timeline.show {
-  opacity: 1;
-  pointer-events: auto;
-}
+#timeline.show { opacity: 1; pointer-events: auto; }
 
 #timelineContent {
   display: flex;
-  flex-direction: row; /* ngang */
+  flex-direction: row;
   gap: 10px;
   overflow-x: auto;
   overflow-y: hidden;
@@ -229,163 +185,117 @@ h2 { margin: 0 0 12px; }
   padding: 8px 14px;
   scroll-behavior: smooth;
 }
-
-/* Ẩn thanh cuộn thô */
-#timelineContent::-webkit-scrollbar {
-  height: 6px;
-}
+#timelineContent::-webkit-scrollbar { height: 6px; }
 #timelineContent::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
 }
 
-/* --- Ảnh trong timeline (kích thước đồng nhất) --- */
+/* --- Ảnh trong timeline --- */
 .timeline-img {
-  width: 120px;          /* ✅ đồng kích thước */
-  height: 90px;          /* ✅ cố định tỉ lệ */
+  width: 120px;
+  height: 90px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-  object-fit: cover;     /* cắt vừa khung, không méo */
+  object-fit: cover;
   background: #eee;
   flex-shrink: 0;
   opacity: 0;
   transform: scale(0.95);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
+.timeline-img.show { opacity: 1; transform: scale(1); }
 
-.timeline-img.show {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* --- Các nút điều khiển --- */
+/* --- Thanh nút điều khiển chính (1 hàng duy nhất) --- */
 #controls {
   position: fixed;
   left: 50%;
-  bottom: 130px; /* vị trí mặc định phía trên timeline */
   transform: translateX(-50%);
+  bottom: 130px;
   display: flex;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(50, 50, 50, 0.4);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   z-index: 700;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.6s ease, transform 0.6s ease, bottom 0.6s ease; /* ⚡ thêm chuyển động bottom */
+  transition: opacity 0.6s ease, bottom 0.6s ease;
 }
-#controls.show {
-  opacity: 1;
-  pointer-events: auto;
-}
+#controls.show { opacity: 1; pointer-events: auto; }
+.controls-lower { bottom: 30px !important; }
 
-/* Tạo khoảng cách hợp lý khi timeline ẩn */
-.controls-lower {
-  bottom: 30px !important; /* 🔽 hạ nút xuống khi timeline ẩn */
-}
-
-.btn {
+#controls .btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 10px 18px;
   border: none;
   border-radius: 10px;
-  padding: 10px 18px;
-  background: #e6e6e9;
   cursor: pointer;
-  transition: filter .25s;
-  font-weight: 500;
+  transition: transform 0.2s, filter 0.2s;
+  min-width: 90px;
 }
-.btn:hover { filter: brightness(.95); }
-.btn-primary { background: #2ecc71; color: #fff; }
-.btn-secondary { background: #6c757d; color: #fff; }
-/* 📱 RESPONSIVE CHO MOBILE */
+#controls .btn:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+/* --- Màu nút --- */
+.btn-primary { background: #2ecc71; color: white; }
+.btn-secondary { background: #6c757d; color: white; }
+
+/* --- Nút bật/tắt timeline --- */
+#toggleTimelineBtn {
+  background: #2ecc71;
+  color: #fff;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+#toggleTimelineBtn.off {
+  background: #6c757d;
+  color: #fff;
+}
+
+/* 📱 Responsive cho mobile */
 @media (max-width: 768px) {
-
-  /* Bản đồ full màn hình, không bị viền */
-  #map {
-    height: 100vh;
-    width: 100%;
-  }
-
-  /* --- Nút điều khiển --- */
   #controls {
-  background: rgba(255, 255, 255, 0.8);
-  padding: 8px 10px;
-  border-radius: 14px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-}
-  #controls {
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 115px; /* nằm ngay trên timeline */
-    display: flex;
-    flex-wrap: wrap;            /* ✅ tự xuống dòng nếu hẹp */
-    justify-content: center;    /* ✅ căn giữa các nút */
-    align-items: center;
+    bottom: 115px;
+    flex-wrap: nowrap;
+    justify-content: center;
+    width: 95%;
+    padding: 8px 12px;
     gap: 8px;
-    width: 95%;                 /* cho rộng một chút để nút không tràn */
-    z-index: 700;
   }
-
   #controls .btn {
-    flex: 1 1 auto;             /* co giãn đều nhau */
-    min-width: 110px;           /* đảm bảo nút không quá nhỏ */
-    max-width: 160px;           /* tránh quá to */
-    text-align: center;
-    padding: 10px 12px;
-    font-size: 0.9rem;
-    border-radius: 10px;
-  }
-
-  /* --- Timeline ảnh --- */
-  #toggleTimelineBtn {
-    flex-basis: 100%;           
-    background: #2ecc71;
-    text-align: center;
+    flex: 1 1 auto;
+    min-width: 75px;
+    padding: 8px 10px;
+    font-size: 0.85rem;
   }
   #timeline {
-    height: 100px;                
-    background: rgba(255, 255, 255, 0.95);
+    height: 100px;
+    background: rgba(255,255,255,0.95);
   }
-  /* Khi timeline bị ẩn */
-  #toggleTimelineBtn.off {
-  background: #6c757d;         
-  color: #fff;
-  }
-  #timelineContent {
-    gap: 6px;
-    padding: 6px 8px;
-  }
-
   .timeline-img {
-    width: 90px;                   
+    width: 90px;
     height: 70px;
     border-radius: 6px;
   }
-
-  /* --- Popup (intro, story, invite) --- */
-  #intro, #storyOverlay, #inviteOverlay {
-    padding: 10px;
-    width: 95%;
-    left: 50%;
-    top: 40%;
-    transform: translate(-50%, -50%);
-    border-radius: 2px;
+  #typingOverlay {
+    font-size: 1.05rem;
+    top: 12%;
+    max-width: 92%;
+    line-height: 1.3em;
   }
+}
 
-  #intro h1, #storyOverlay h2, #inviteOverlay h2 {
-    font-size: 1.2rem;
-  }
-
-  #intro p, #inviteOverlay p {
-    font-size: 0.9rem;
-  }
-
-  #startBtn, #closeStoryBtn, #inviteCloseBtn {
-    font-size: 1rem;
-    padding: 10px 18px;
-    margin-top: 12px;
-    align-self: center;
-  }
-
-  /* --- Hiệu ứng chữ gõ --- */
-  /* 🎯 Tối ưu chữ gõ cho mobile */
+/* 🎯 Tối ưu chữ gõ cho mobile */
 #typingOverlay {
   position: fixed;
   top: 10%;
@@ -422,6 +332,3 @@ h2 { margin: 0 0 12px; }
     line-height: 1.25em;
   }
 }
-
-
-
