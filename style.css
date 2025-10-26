@@ -335,33 +335,38 @@ h2 { margin: 0 0 12px; }
 
   /* --- Timeline ảnh --- */
   #toggleTimelineBtn {
-    flex-basis: 100%;           /* ✅ nằm riêng hàng (dễ bấm) */
+    flex-basis: 100%;           
+    background: #2ecc71;
     text-align: center;
   }
   #timeline {
-    height: 100px;                  /* thấp hơn một chút */
+    height: 100px;                
     background: rgba(255, 255, 255, 0.95);
   }
-
+  /* Khi timeline bị ẩn */
+  #toggleTimelineBtn.off {
+  background: #6c757d;         
+  color: #fff;
+  }
   #timelineContent {
     gap: 6px;
     padding: 6px 8px;
   }
 
   .timeline-img {
-    width: 90px;                    /* ảnh nhỏ lại để vừa màn hình */
+    width: 90px;                   
     height: 70px;
     border-radius: 6px;
   }
 
   /* --- Popup (intro, story, invite) --- */
   #intro, #storyOverlay, #inviteOverlay {
-    padding: 20px;
-    width: 90%;
+    padding: 10px;
+    width: 95%;
     left: 50%;
-    top: 50%;
+    top: 40%;
     transform: translate(-50%, -50%);
-    border-radius: 12px;
+    border-radius: 2px;
   }
 
   #intro h1, #storyOverlay h2, #inviteOverlay h2 {
@@ -382,7 +387,10 @@ h2 { margin: 0 0 12px; }
   /* --- Hiệu ứng chữ gõ --- */
   #typingOverlay {
     font-size: 1rem;
-    width: 50%;
+    width: 40%;
     line-height: 1.3em;
   }
 }
+
+
+
